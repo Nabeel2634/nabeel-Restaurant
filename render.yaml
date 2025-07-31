@@ -1,7 +1,7 @@
 services:
   # Backend API Service
   - type: web
-    name: restaurant-reviews-backend
+    name: nabeel-restaurant-backend
     env: node
     plan: free
     buildCommand: cd backend && npm install
@@ -12,26 +12,8 @@ services:
       - key: PORT
         value: 10000
       - key: RESTREVIEWS_DB_URI
-        fromDatabase:
-          name: mongodb-atlas
-          property: connectionString
+        value: mongodb+srv://username:password@cluster.mongodb.net/sample_restaurants?retryWrites=true&w=majority
       - key: RESTREVIEWS_NS
         value: sample_restaurants
       - key: ALLOWED_ORIGINS
-        value: https://your-frontend-domain.onrender.com
-
-  # Frontend Static Site
-  - type: web
-    name: restaurant-reviews-frontend
-    env: static
-    plan: free
-    buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: frontend/build
-    envVars:
-      - key: REACT_APP_API_URL
-        value: https://restaurant-reviews-backend.onrender.com
-
-# Database (if using Render's managed MongoDB)
-# databases:
-#   - name: mongodb-atlas
-#     plan: free
+        value: https://nabeel-restaurant.vercel.app
