@@ -1,4 +1,5 @@
 import RestaurantsDAO from "../dao/restaurantsDAO.js"
+import { mockRestaurants, mockCuisines } from "../mock-data.js"
 
 export default class RestaurantsController {
   static async apiGetRestaurants(req, res, next) {
@@ -14,20 +15,47 @@ export default class RestaurantsController {
       filters.name = req.query.name
     }
 
-    const { restaurantsList, totalNumRestaurants } = await RestaurantsDAO.getRestaurants({
-      filters,
-      page,
-      restaurantsPerPage,
-    })
+    try {
+      const { restaurantsList, totalNumRestaurants } = await RestaurantsDAO.getRestaurants({
+        filters,
+        page,
+        restaurantsPerPage,
+      })
 
-    let response = {
-      restaurants: restaurantsList,
-      page: page,
-      filters: filters,
-      entries_per_page: restaurantsPerPage,
-      total_results: totalNumRestaurants,
+      let response = {
+        restaurants: restaurantsList,
+        page: page,
+        filters: filters,
+        entries_per_page: restaurantsPerPage,
+        total_results: totalNumRestaurants,
+      }
+      res.json(response)
+    } catch (error) {
+      console.log("🔄 Database unavailable, using mock data")
+
+      // Filter mock data based on query
+      let filteredRestaurants = mockRestaurants
+
+      if (filters.cuisine) {
+        filteredRestaurants = mockRestaurants.filter(r => r.cuisine === filters.cuisine)
+      } else if (filters.zipcode) {
+        filteredRestaurants = mockRestaurants.filter(r => r.address.zipcode === filters.zipcode)
+      } else if (filters.name) {
+        filteredRestaurants = mockRestaurants.filter(r =>
+          r.name.toLowerCase().includes(filters.name.toLowerCase())
+        )
+      }
+
+      let response = {
+        restaurants: filteredRestaurants,
+        page: page,
+        filters: filters,
+        entries_per_page: restaurantsPerPage,
+        total_results: filteredRestaurants.length,
+        mock_data: true
+      }
+      res.json(response)
     }
-    res.json(response)
   }
   static async apiGetRestaurantById(req, res, next) {
     try {
@@ -49,8 +77,8 @@ export default class RestaurantsController {
       let cuisines = await RestaurantsDAO.getCuisines()
       res.json(cuisines)
     } catch (e) {
-      console.log(`api, ${e}`)
-      res.status(500).json({ error: e })
+      console.log("🔄 Database unavailable, using mock cuisines")
+      res.json(mockCuisines)
     }
   }
 }

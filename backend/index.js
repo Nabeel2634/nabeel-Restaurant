@@ -9,58 +9,61 @@ const MongoClient = mongodb.MongoClient
 
 const port = process.env.PORT || 5000
 
-// Direct MongoDB connection string (hardcoded for deployment)
-const MONGODB_URI = "mongodb+srv://restaurantUser:RestaurantApp2024!@cluster0.ujlpeq3.mongodb.net/sample_restaurants?retryWrites=true&w=majority"
+// Multiple connection strategies for MongoDB Atlas
+const MONGODB_CONNECTIONS = [
+    // Strategy 1: Standard SRV with minimal options
+    "mongodb+srv://restaurantUser:RestaurantApp2024!@cluster0.ujlpeq3.mongodb.net/sample_restaurants?retryWrites=true&w=majority",
 
-// Alternative connection string with TLS (fallback)
-const MONGODB_URI_FALLBACK = "mongodb+srv://restaurantUser:RestaurantApp2024!@cluster0.ujlpeq3.mongodb.net/sample_restaurants?retryWrites=true&w=majority&tls=true&tlsAllowInvalidCertificates=true"
+    // Strategy 2: SRV with TLS disabled
+    "mongodb+srv://restaurantUser:RestaurantApp2024!@cluster0.ujlpeq3.mongodb.net/sample_restaurants?retryWrites=true&w=majority&tls=false",
+
+    // Strategy 3: Direct connection to MongoDB nodes (bypass SRV)
+    "mongodb://cluster0-shard-00-00.ujlpeq3.mongodb.net:27017,cluster0-shard-00-01.ujlpeq3.mongodb.net:27017,cluster0-shard-00-02.ujlpeq3.mongodb.net:27017/sample_restaurants?ssl=false&replicaSet=atlas-123abc-shard-0&authSource=admin&retryWrites=true&w=majority",
+
+    // Strategy 4: Simple connection without SSL
+    "mongodb+srv://restaurantUser:RestaurantApp2024!@cluster0.ujlpeq3.mongodb.net/sample_restaurants?ssl=false"
+]
 
 console.log("🔗 Connecting to MongoDB Atlas...")
 console.log("Database: sample_restaurants")
-console.log("🔐 Using SSL connection with certificate bypass")
+console.log("🔄 Trying multiple connection strategies...")
 
-MongoClient.connect(
-    MONGODB_URI,
-    {
-        maxPoolSize: 50,
-        wtimeoutMS: 2500,
-        serverSelectionTimeoutMS: 10000,
-        tls: true,
-        tlsAllowInvalidCertificates: true
+// Function to try multiple connection strategies
+async function connectToMongoDB() {
+    for (let i = 0; i < MONGODB_CONNECTIONS.length; i++) {
+        const connectionString = MONGODB_CONNECTIONS[i];
+        console.log(`📡 Attempting connection strategy ${i + 1}/${MONGODB_CONNECTIONS.length}...`);
+
+        try {
+            const client = await MongoClient.connect(connectionString, {
+                maxPoolSize: 50,
+                wtimeoutMS: 2500,
+                serverSelectionTimeoutMS: 8000,
+            });
+
+            console.log(`✅ Connection successful with strategy ${i + 1}!`);
+            return client;
+        } catch (error) {
+            console.log(`❌ Strategy ${i + 1} failed:`, error.message);
+            if (i === MONGODB_CONNECTIONS.length - 1) {
+                throw new Error("All connection strategies failed");
+            }
+        }
     }
-).catch(async err => {
-    console.error("❌ Primary MongoDB connection failed:", err.message)
-    console.log("🔄 Trying fallback connection without SSL...")
+}
 
-    try {
-        const fallbackClient = await MongoClient.connect(MONGODB_URI_FALLBACK, {
-            maxPoolSize: 50,
-            wtimeoutMS: 2500,
-            serverSelectionTimeoutMS: 10000,
-            tls: true,
-            tlsAllowInvalidCertificates: true
-        });
+// Try to connect using multiple strategies
+connectToMongoDB().catch(err => {
+    console.error("❌ All MongoDB connection strategies failed:", err.message)
+    console.log("🚀 Starting server without database connection...")
 
-        console.log("✅ Fallback connection successful!")
-        await RestaurantsDAO.injectDB(fallbackClient)
-        await ReviewsDAO.injectDB(fallbackClient)
-
-        app.listen(port, () => {
-            console.log(`🚀 Server listening on port ${port}`)
-            console.log("🌐 Backend API ready with fallback connection!")
-        })
-
-    } catch (fallbackErr) {
-        console.error("❌ Fallback connection also failed:", fallbackErr.message)
-        console.log("Starting server without database connection...")
-
-        // Start server without database
-        app.listen(port, () => {
-          console.log(`🚀 Server listening on port ${port}`)
-          console.log("⚠️  Running without database - API will return empty data")
-          console.log("🔧 Check MongoDB Atlas connection and credentials")
-        })
-    }
+    // Start server without database
+    app.listen(port, () => {
+      console.log(`🚀 Server listening on port ${port}`)
+      console.log("⚠️  Running without database - API will return empty data")
+      console.log("🔧 Check MongoDB Atlas connection and credentials")
+      console.log("💡 Consider using MongoDB Compass to test connection")
+    })
 })
 .then(async client => {
     if (client) {
