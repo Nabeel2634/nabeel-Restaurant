@@ -9,11 +9,11 @@ const MongoClient = mongodb.MongoClient
 
 const port = process.env.PORT || 5000
 
-// Direct MongoDB connection string with SSL fix (hardcoded for deployment)
-const MONGODB_URI = "mongodb+srv://restaurantUser:RestaurantApp2024!@cluster0.ujlpeq3.mongodb.net/sample_restaurants?retryWrites=true&w=majority&ssl=true&authSource=admin&tlsAllowInvalidCertificates=true"
+// Direct MongoDB connection string (hardcoded for deployment)
+const MONGODB_URI = "mongodb+srv://restaurantUser:RestaurantApp2024!@cluster0.ujlpeq3.mongodb.net/sample_restaurants?retryWrites=true&w=majority"
 
-// Alternative connection string without SSL (fallback)
-const MONGODB_URI_FALLBACK = "mongodb+srv://restaurantUser:RestaurantApp2024!@cluster0.ujlpeq3.mongodb.net/sample_restaurants?retryWrites=true&w=majority&tls=false"
+// Alternative connection string with TLS (fallback)
+const MONGODB_URI_FALLBACK = "mongodb+srv://restaurantUser:RestaurantApp2024!@cluster0.ujlpeq3.mongodb.net/sample_restaurants?retryWrites=true&w=majority&tls=true&tlsAllowInvalidCertificates=true"
 
 console.log("🔗 Connecting to MongoDB Atlas...")
 console.log("Database: sample_restaurants")
@@ -25,10 +25,8 @@ MongoClient.connect(
         maxPoolSize: 50,
         wtimeoutMS: 2500,
         serverSelectionTimeoutMS: 10000,
-        ssl: true,
-        sslValidate: false,
-        tlsAllowInvalidCertificates: true,
-        tlsAllowInvalidHostnames: true
+        tls: true,
+        tlsAllowInvalidCertificates: true
     }
 ).catch(async err => {
     console.error("❌ Primary MongoDB connection failed:", err.message)
@@ -39,6 +37,8 @@ MongoClient.connect(
             maxPoolSize: 50,
             wtimeoutMS: 2500,
             serverSelectionTimeoutMS: 10000,
+            tls: true,
+            tlsAllowInvalidCertificates: true
         });
 
         console.log("✅ Fallback connection successful!")

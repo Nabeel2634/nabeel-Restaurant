@@ -13,14 +13,18 @@ const corsOptions = {
     const allowedOrigins = [
       'http://localhost:3000',
       'https://nabeel-restaurant.vercel.app',
+      'https://nabeel-restaurant-lfkmvh2mt-nabeels-projects-91b27f85.vercel.app',
       'https://nabeel-restaurant-backend.onrender.com'
     ];
 
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    // Allow all Vercel preview URLs and main domains
+    if (allowedOrigins.indexOf(origin) !== -1 ||
+        (origin && origin.includes('vercel.app')) ||
+        (origin && origin.includes('nabeels-projects'))) {
       callback(null, true);
     } else {
       console.log('🚫 CORS blocked origin:', origin);
-      callback(null, true); // Allow all origins for now
+      callback(null, true); // Allow all origins for development
     }
   },
   credentials: true
