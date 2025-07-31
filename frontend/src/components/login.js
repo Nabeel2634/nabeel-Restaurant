@@ -88,15 +88,15 @@ const Login = props => {
   const loginAsDemo = (userType) => {
     const demoUsers = {
       user: {
-        id: "demo-user",
+        id: "user-001",
         name: "Demo User",
         email: "user@demo.com",
         role: 'user'
       },
       admin: {
-        id: "demo-admin",
-        name: "Demo Admin",
-        email: "admin@demo.com",
+        id: "admin-001",
+        name: "Nabeel Admin",
+        email: "admin@nabeelrestaurant.com",
         role: 'admin'
       }
     };

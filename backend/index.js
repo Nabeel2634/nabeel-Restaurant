@@ -9,31 +9,46 @@ const MongoClient = mongodb.MongoClient
 
 const port = process.env.PORT || 5000
 
+// Direct MongoDB connection string (hardcoded for deployment)
+const MONGODB_URI = "mongodb+srv://restaurantUser:RestaurantApp2024!@cluster0.ujlpeq3.mongodb.net/sample_restaurants?retryWrites=true&w=majority&appName=Cluster0"
+
+console.log("🔗 Connecting to MongoDB Atlas...")
+console.log("Database: sample_restaurants")
+
 MongoClient.connect(
-    process.env.RESTREVIEWS_DB_URI,
+    MONGODB_URI,
     {
         maxPoolSize: 50,
         wtimeoutMS: 2500,
         serverSelectionTimeoutMS: 5000,
     }
 ).catch(err => {
-    console.error("MongoDB connection failed:", err.message)
+    console.error("❌ MongoDB connection failed:", err.message)
+    console.error("Connection string used:", MONGODB_URI.replace(/:[^:@]*@/, ':****@'))
     console.log("Starting server without database connection...")
 
     // Start server without database
     app.listen(port, () => {
-      console.log(`Server listening on port ${port}`)
+      console.log(`🚀 Server listening on port ${port}`)
       console.log("⚠️  Running without database - API will return empty data")
-      console.log("To connect to database, update RESTREVIEWS_DB_URI in .env file")
+      console.log("🔧 Check MongoDB Atlas connection and credentials")
     })
 })
 .then(async client => {
     if (client) {
+        console.log("✅ Connected to MongoDB Atlas successfully!")
+        console.log("🗄️  Database: sample_restaurants")
+
         await RestaurantsDAO.injectDB(client)
         await ReviewsDAO.injectDB(client)
+
+        console.log("📊 Database Access Objects initialized")
+
         app.listen(port, () => {
-          console.log(`Server listening on port ${port}`)
-          console.log("✅ Connected to MongoDB database")
+          console.log(`🚀 Server listening on port ${port}`)
+          console.log("🌐 Backend API ready!")
+          console.log("📍 Health check: /health")
+          console.log("🍽️  Restaurants API: /api/v1/restaurants")
         })
     }
 })

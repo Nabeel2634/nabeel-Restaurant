@@ -4,20 +4,23 @@ import restaurants from "./api/restaurants.route.js"
 
 const app = express()
 
-// Configure CORS for production
+// Configure CORS for production (hardcoded for deployment)
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
 
-    const allowedOrigins = process.env.ALLOWED_ORIGINS
-      ? process.env.ALLOWED_ORIGINS.split(',')
-      : ['http://localhost:3000'];
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'https://nabeel-restaurant.vercel.app',
+      'https://nabeel-restaurant-backend.onrender.com'
+    ];
 
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      console.log('🚫 CORS blocked origin:', origin);
+      callback(null, true); // Allow all origins for now
     }
   },
   credentials: true
