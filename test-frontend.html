@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Reviews - API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .test-result { margin: 20px 0; padding: 15px; border-radius: 5px; }
+        .success { background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .info { background-color: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+        button { padding: 10px 20px; margin: 10px 5px; cursor: pointer; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍽️ Restaurant Reviews - API Test</h1>
+        
+        <div class="info">
+            <h3>Backend Status</h3>
+            <p>Testing connection to backend API at <code>http://localhost:5000</code></p>
+        </div>
+
+        <button onclick="testHealthEndpoint()">Test Health Endpoint</button>
+        <button onclick="testRestaurantsAPI()">Test Restaurants API</button>
+        <button onclick="testCORS()">Test CORS</button>
+
+        <div id="results"></div>
+
+        <div class="info">
+            <h3>Environment Configuration</h3>
+            <p><strong>Backend URL:</strong> http://localhost:5000</p>
+            <p><strong>Frontend URL:</strong> http://localhost:3000 (when running)</p>
+            <p><strong>Database:</strong> MongoDB (currently using test mode)</p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000';
+        const resultsDiv = document.getElementById('results');
+
+        function addResult(title, content, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = `<h4>${title}</h4><pre>${content}</pre>`;
+            resultsDiv.appendChild(div);
+        }
+
+        async function testHealthEndpoint() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                addResult('✅ Health Endpoint Test', JSON.stringify(data, null, 2), 'success');
+            } catch (error) {
+                addResult('❌ Health Endpoint Test', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testRestaurantsAPI() {
+            try {
+                const response = await fetch(`${API_BASE}/api/v1/restaurants`);
+                const data = await response.json();
+                addResult('✅ Restaurants API Test', JSON.stringify(data, null, 2), 'success');
+            } catch (error) {
+                addResult('❌ Restaurants API Test', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testCORS() {
+            try {
+                const response = await fetch(`${API_BASE}/health`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                addResult('✅ CORS Test', 'CORS is properly configured!', 'success');
+            } catch (error) {
+                addResult('❌ CORS Test', `CORS Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-run tests on page load
+        window.onload = function() {
+            setTimeout(testHealthEndpoint, 500);
+            setTimeout(testRestaurantsAPI, 1000);
+            setTimeout(testCORS, 1500);
+        };
+    </script>
+</body>
+</html>

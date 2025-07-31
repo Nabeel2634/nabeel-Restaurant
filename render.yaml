@@ -1,0 +1,37 @@
+services:
+  # Backend API Service
+  - type: web
+    name: restaurant-reviews-backend
+    env: node
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: RESTREVIEWS_DB_URI
+        fromDatabase:
+          name: mongodb-atlas
+          property: connectionString
+      - key: RESTREVIEWS_NS
+        value: sample_restaurants
+      - key: ALLOWED_ORIGINS
+        value: https://your-frontend-domain.onrender.com
+
+  # Frontend Static Site
+  - type: web
+    name: restaurant-reviews-frontend
+    env: static
+    plan: free
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/build
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://restaurant-reviews-backend.onrender.com
+
+# Database (if using Render's managed MongoDB)
+# databases:
+#   - name: mongodb-atlas
+#     plan: free

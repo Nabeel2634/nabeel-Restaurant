@@ -1,0 +1,147 @@
+{
+  "restaurants": [
+    {
+      "_id": "1",
+      "name": "Artisanal Burger Co.",
+      "cuisine": "American",
+      "address": {
+        "building": "123",
+        "street": "Main Street",
+        "zipcode": "10001"
+      },
+      "avgRating": 4.5,
+      "reviews": [
+        {
+          "_id": "r1",
+          "name": "John Doe",
+          "text": "Amazing burgers! The beef is perfectly cooked and the buns are fresh. Highly recommend the truffle fries!",
+          "rating": 5,
+          "date": "2024-01-15T00:00:00.000Z",
+          "user_id": "user1"
+        },
+        {
+          "_id": "r2",
+          "name": "Sarah Wilson",
+          "text": "Great atmosphere and friendly service. The veggie burger was surprisingly delicious!",
+          "rating": 4,
+          "date": "2024-01-20T00:00:00.000Z",
+          "user_id": "user2"
+        }
+      ]
+    },
+    {
+      "_id": "2",
+      "name": "Pasta Palace",
+      "cuisine": "Italian",
+      "address": {
+        "building": "456",
+        "street": "Oak Avenue",
+        "zipcode": "10002"
+      },
+      "avgRating": 4.8,
+      "reviews": [
+        {
+          "_id": "r3",
+          "name": "Mike Johnson",
+          "text": "Authentic Italian flavors! The carbonara was creamy and perfect. Will definitely come back.",
+          "rating": 5,
+          "date": "2024-01-22T00:00:00.000Z",
+          "user_id": "user3"
+        },
+        {
+          "_id": "r4",
+          "name": "Emily Chen",
+          "text": "Lovely ambiance and excellent pasta. The tiramisu was the perfect ending to our meal.",
+          "rating": 5,
+          "date": "2024-01-25T00:00:00.000Z",
+          "user_id": "user4"
+        }
+      ]
+    },
+    {
+      "_id": "3",
+      "name": "Sushi Zen",
+      "cuisine": "Japanese",
+      "address": {
+        "building": "789",
+        "street": "Pine Street",
+        "zipcode": "10003"
+      },
+      "avgRating": 4.7,
+      "reviews": [
+        {
+          "_id": "r5",
+          "name": "David Kim",
+          "text": "Fresh sushi and beautiful presentation. The chef's special roll was incredible!",
+          "rating": 5,
+          "date": "2024-01-28T00:00:00.000Z",
+          "user_id": "user5"
+        }
+      ]
+    },
+    {
+      "_id": "4",
+      "name": "Taco Fiesta",
+      "cuisine": "Mexican",
+      "address": {
+        "building": "321",
+        "street": "Elm Street",
+        "zipcode": "10004"
+      },
+      "avgRating": 4.3,
+      "reviews": [
+        {
+          "_id": "r6",
+          "name": "Maria Rodriguez",
+          "text": "Authentic Mexican flavors and generous portions. The guacamole is made fresh daily!",
+          "rating": 4,
+          "date": "2024-01-30T00:00:00.000Z",
+          "user_id": "user6"
+        }
+      ]
+    },
+    {
+      "_id": "5",
+      "name": "Dragon Palace",
+      "cuisine": "Chinese",
+      "address": {
+        "building": "654",
+        "street": "Maple Drive",
+        "zipcode": "10005"
+      },
+      "avgRating": 4.2,
+      "reviews": [
+        {
+          "_id": "r7",
+          "name": "Lisa Wang",
+          "text": "Great dim sum and friendly service. The Peking duck was outstanding!",
+          "rating": 4,
+          "date": "2024-02-01T00:00:00.000Z",
+          "user_id": "user7"
+        }
+      ]
+    },
+    {
+      "_id": "6",
+      "name": "Spice Garden",
+      "cuisine": "Indian",
+      "address": {
+        "building": "987",
+        "street": "Curry Lane",
+        "zipcode": "10006"
+      },
+      "avgRating": 4.6,
+      "reviews": [
+        {
+          "_id": "r8",
+          "name": "Raj Patel",
+          "text": "Authentic Indian cuisine with perfect spice levels. The butter chicken is a must-try!",
+          "rating": 5,
+          "date": "2024-02-03T00:00:00.000Z",
+          "user_id": "user8"
+        }
+      ]
+    }
+  ],
+  "cuisines": ["American", "Italian", "Japanese", "Mexican", "Chinese", "Indian", "Thai", "French", "Mediterranean"]
+}
